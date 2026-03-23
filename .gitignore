@@ -1,3 +1,9 @@
+# Important: secrets
+token.json
+
+# my personal data
+transformed_data.csv
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
