@@ -2,7 +2,7 @@ name: budget
 channels:
   - conda-forge
 dependencies:
-  - python
+  - python=3.11 # come back and update this periodically, but 3.14 is still pretty bleeding edge as of 2026-03-25 and isn't compatible with all jupyter extensions yet
   - google-api-python-client
   - google-auth-httplib2
   - google-auth-oauthlib
@@ -20,4 +20,5 @@ dependencies:
   - pytest
   - python-dotenv
   - jupyterlab
-  - nb_conda
+  # purposefully leaving nbconda out of this list bc it's brittle when combined with modern conda-forge
+  - ipykernel
