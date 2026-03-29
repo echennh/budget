@@ -1,0 +1,101 @@
+"subcategory","category"
+Income,Income
+Paycheck,Income
+Interest Income,Income
+Bonus,Income
+Loan Disbursement,Income
+Home,Home
+Mortgage & Rent,Home
+Home Insurance,Home
+Groceries,Food & Dining
+Pet Food & Supplies,Pets
+Health Insurance,Health & Fitness
+Repairs,Home
+Loans,Loans
+Loan Payment,Loans
+Veterinary,Pets
+Service & Parts,Auto & Transport
+Student Loan,Education
+Gas & Fuel,Auto & Transport
+Home Supplies,Home
+Pharmacy,Health & Fitness
+Electric,Bills & Utilities
+Internet,Bills & Utilities
+Necessary Hygiene,Health & Fitness
+Taxes,Taxes
+Mobile Phone,Bills & Utilities
+"Sewage, Water, & Gas",Bills & Utilities
+Food & Dining,Food & Dining
+Doctor,Health & Fitness
+Education,Education
+Dentist,Health & Fitness
+Bills & Utilities,Bills & Utilities
+Buy,Investments
+Deposit,Investments
+Sell,Investments
+Restaurants,Food & Dining
+Shopping,Shopping
+Gift,Gifts & Donations
+Clothing,Shopping
+Pet Insurance,Pets
+Fast Food,Food & Dining
+Dog Toys,Pets
+Coffee Shops,Food & Dining
+Home Services,Home
+Food Delivery,Food & Dining
+Hair,Personal Care
+Furnishings,Home
+Alcohol & Bars,Food & Dining
+Daycare,Pets
+Public Transportation,Auto & Transport
+Charity,Gifts & Donations
+Pet Grooming,Pets
+Arts,Entertainment
+Electronics & Software,Shopping
+Parking,Auto & Transport
+Pets,Pets
+Financial,Financial
+Movies & DVDs,Entertainment
+Sports,Health & Fitness
+Music,Entertainment
+Makeup,Personal Care
+Nails,Personal Care
+Hobby,Personal Care
+SaaS,Business Services
+Sporting Goods,Shopping
+Air Travel,Travel
+Personal Care,Personal Care
+Hobbies,Shopping
+Books,Shopping
+Business Services,Business Services
+Entertainment,Entertainment
+Travel,Travel
+Television,Bills & Utilities
+Dog Training,Pets
+Ride Share,Auto & Transport
+Books & Supplies,Education
+Auto & Transport,Auto & Transport
+Home Improvement,Home
+Romantic/Social Date,Entertainment
+Videogames,Entertainment
+Shipping,Business Services
+ATM Fee,Fees & Charges
+Amusement,Entertainment
+Gym,Health & Fitness
+Campaign Finance,Gifts & Donations
+Office Supplies,Business Services
+Fees & Charges,Fees & Charges
+Gifts & Donations,Gifts & Donations
+Health & Fitness,Health & Fitness
+Finance Charge,Fees & Charges
+Transfer,Transfer
+Credit Card Payment,Transfer
+Transfer for Debit,Transfer
+Transfer for Cash Spending,Transfer
+Gift from Family,Income
+Rental Application,Home
+Tuition,Education
+Hide from Budgets & Trends,Hide from Budgets & Trends
+Transfer to Emergency Fund,Transfer
+Emergency Fund Contribution Received,Transfer
+Transfer to Loan Account,Transfer
