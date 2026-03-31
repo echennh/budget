@@ -167,7 +167,6 @@ transaction_owner,
     serial_id
 from staging.historical_transactions;
 
-select * from silver.historical_transactions order by random() limit 10;
 
 drop table overlap_enriched;
 drop table overlap_unenriched;
@@ -175,8 +174,7 @@ create temporary table overlap_enriched as select * from silver.historical_trans
 create temporary table overlap_unenriched as select * from mart.transactions where transaction_date >= '2024-03-25' and transaction_date <= '2025-05-13';
 
 
-select * from overlap_enriched order by random() limit 1;
-
+drop table overlap_sidebyside;
 -- merge the rows on date and amount
 create temporary table overlap_sidebyside as 
 select enrich.row_id as row_id_enriched,
@@ -240,6 +238,8 @@ full outer join overlap_unenriched unenrich
 on enrich.transaction_date = unenrich.transaction_date and enrich.amount = unenrich.amount;
 
 
+
+
 -- prefer the account name in the enriched data
 -- fill out the category and subcategory in the unenriched data with what it is in the enriched dataset
 -- keep the row_id in the unenriched data
@@ -247,7 +247,51 @@ on enrich.transaction_date = unenrich.transaction_date and enrich.amount = unenr
 
 select * from overlap_sidebyside order by random() limit 10;
 
+create temporary table overlap_merged as 
+select row_id_final as row_id,
+owner_final as transaction_owner,
+transaction_date,
+amount,
+transaction_type_raw as fidelity_transaction_type,
+transaction_type_final as transaction_type,
+account_name_final as account_name, 
+category_final as category,
+subcategory_final as subcategory,
+original_description_final as original_description,
+description_enriched as description,
+itemized_final as itemized,
+shared_final as shared,
+amount_owed_to_partner_final as amount_owed_to_partner,
+merchant_final as merchant,
+labels_final as labels,
+tags_final as tags
+from overlap_sidebyside;
+
 -- figure out how many rows weren't merged after the full outer join
+
+select count(*) from overlap_enriched; -- 1,693
+select count(*) from overlap_unenriched; -- 1,766
+select count(*) from overlap_sidebyside; -- 1,861
+-- that means that there are 95 rows that were only in the enriched data, 168 rows that were only in the unenriched data, and 1598 rows that were in both, 
+-- for the same time period of   '2024-03-25' <= transaction_date <= '2025-05-13';
+
+/*
+ * Investigate and resolve the 95 rows that were only in the enriched data
+ * Double check the 168 rows that were only in the unenriched data - it's possible this is just late-arriving data that was recorded after I extracted last time, depending on the range of transaction dates
+ * 
+ * 1. Insert all enriched data from < '2024-03-25' as-is into mart.transactions
+ * 2. Insert the merged data from '2024-03-25' <= transaction_date <= '2025-05-13' into mart.transactions
+ * 3. Re-pull the latest data and update the unenriched data in postgres with it
+ * 3. Insert all the unenriched data from >  '2025-05-13' as-is into mart.transactions
+ * 4. Write and run all cleaning and enrichment logic, and run on all data in mart.transactions
+ * */
+
+select * 
+from overlap_enriched enrich left join overlap_unenriched unenrich
+on enrich.transaction_date = unenrich.transaction_date and enrich.amount = unenrich.amount
+where unenrich.amount is null or unenrich.transaction_date is null
+order by enrich.transaction_date;
+-- this left anti join tells me that there is only 1 record that's in the enriched dataset but not in the unenriched dataset?!?
 
 
 
