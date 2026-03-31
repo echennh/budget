@@ -50,6 +50,61 @@ tags text
 
 -- TODO: figure out upsert logic
 
+-- clean the staged data then left anti join
+create table silver.transactions (transaction_owner text,
+transaction_date date,
+amount numeric,
+fidelity_transaction_type text,
+transaction_type text,
+account_name text, 
+fidelity_category text,
+category text,
+fidelity_subcategory text,
+subcategory text,
+original_description text,
+description text,
+itemized boolean,
+shared boolean,
+amount_owed_to_partner numeric,
+merchant text,
+labels text,
+tags text);
+
+-- todo: figure out upsert logic here as well
+-- maybe truncate and reinsert all data?
+insert into silver.transactions (transaction_date, amount, fidelity_transaction_type, transaction_type, account_name, fidelity_category, fidelity_subcategory, original_description, itemized)
+select transaction_date,
+abs(amount),
+transaction_type,
+case when amount>0
+	then 'credit'
+	when amount <0
+	then 'debit'
+end,
+account_name,
+category,
+subcategory,
+description,
+false
+from staging.transactions;
+
+select fidelity_transaction_type, amount>0 as net_positive, count(*) as cnt
+from silver.transactions
+group by fidelity_transaction_type, net_positive
+order by cnt desc;
+
+
+-- TODO: Sort out these 29 transactions that don't make sense because they're categorized as expenses but are net positives
+select * from mart.transactions t  where fidelity_transaction_type = 'Expenses' and amount > 0 order by amount desc;
+
+
+-- get all the rows in silver.transactions that are not in mart.transactions and insert only those
+with new_rows as (
+select silver.* from silver.transactions silver
+left join mart.transactions current
+on silver.amount=current.amount and silver.transaction_date = current.transaction_date 
+where current.amount is null and current.transaction_date is null)
+
 insert into mart.transactions (transaction_date, amount, fidelity_transaction_type, account_name, fidelity_category, fidelity_subcategory, original_description, itemized)
 select transaction_date,
 amount,
@@ -59,34 +114,15 @@ category,
 subcategory,
 description,
 false
-from staging.transactions;
+from new_rows;
 
 select count(*), count(row_id)
 from mart.transactions;
 
-select fidelity_transaction_type, amount>0 as net_positive, count(*) as cnt
-from mart.transactions
-group by fidelity_transaction_type, net_positive
-order by cnt desc;
-
-update mart.transactions
-set transaction_type = 'debit'
-where amount < 0;
-
-update mart.transactions
-set transaction_type = 'credit'
-where amount > 0;
-
-
--- TODO: Sort out these 29 transactions that don't make sense because they're categorized as expenses but are net positives
-select * from mart.transactions t  where fidelity_transaction_type = 'Expenses' and amount > 0 order by amount desc;
-
-update mart.transactions 
-set amount = abs(amount);
 
 --- MERGE NEW DATA WITH HISTORICAL DATA ----
 select min(transaction_date::date), max(transaction_date::date) from mart.transactions;
--- 2024-03-25	2026-03-23
+-- 2024-03-25	2026-03-30
 
 select min(transaction_date::date), max(transaction_date::date) from staging.historical_transactions;
 -- 2018-01-31	2025-05-13
